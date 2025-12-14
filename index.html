@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema Interno – Naciones Unidas</title>
+  <style>
+    :root {
+      --bg-main: radial-gradient(circle at center, #0f1c26 0%, #070b10 70%);
+      --panel-bg: rgba(10, 14, 20, 0.85);
+      --border-soft: rgba(255,255,255,0.08);
+      --text-main: #e8edf2;
+      --text-muted: #9aa4ad;
+      --accent: #b11226;
+    }
+
+    * { box-sizing: border-box; font-family: "Segoe UI", Roboto, Arial, sans-serif; }
+
+    body {
+      margin: 0; height: 100vh; background: var(--bg-main); color: var(--text-main);
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+
+    .panel {
+      width: 720px; max-width: 92vw; padding: 48px 56px;
+      background: var(--panel-bg); border: 1px solid var(--border-soft);
+      backdrop-filter: blur(6px); text-align: center; animation: fadeIn 1s ease;
+    }
+
+    h1 { letter-spacing: 3px; font-size: 1.4rem; margin-bottom: 12px; }
+    .subtitle { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px; }
+
+    .classified {
+      font-size: 0.8rem; line-height: 1.6; color: #c7cdd3; margin-bottom: 36px;
+    }
+
+    select {
+      width: 100%; padding: 14px; background: #ffffff; border: 1px solid #000000;
+      color: #000000; font-size: 0.9rem; margin-bottom: 24px;
+    }
+
+    select option { background: #ffffff; color: #000000; }
+
+    button {
+      width: 100%; padding: 14px; background: transparent;
+      border: 1px solid rgba(255,255,255,0.25); color: var(--text-main);
+      font-size: 0.9rem; letter-spacing: 1px; cursor: pointer; transition: all 0.25s ease;
+    }
+
+    button:hover { background: var(--text-main); color: #000; }
+
+    /* CRISIS */
+    .crisis-mode {
+      background: radial-gradient(circle at center, #5a0e14 0%, #240508 70%);
+      animation: shake 0.12s infinite;
+    }
+
+    .log {
+      margin-top: 28px; font-family: "Courier New", monospace; font-size: 0.8rem;
+      text-align: left; color: #f2dcdc;
+    }
+
+    .result-block {
+      text-align: left; font-size: 0.9rem; line-height: 1.7; color: #e6ebf0;
+    }
+
+    .result-block strong { color: #ffffff; }
+    .hidden { display: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0); }
+      25% { transform: translate(-2px, 1px); }
+      50% { transform: translate(2px, -1px); }
+      75% { transform: translate(-1px, -2px); }
+      100% { transform: translate(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ACCESO -->
+  <div class="panel" id="access">
+    <h1>ACCESO RESTRINGIDO</h1>
+    <div class="subtitle">Sistema Interno · Naciones Unidas</div>
+
+    <div class="classified">
+      INFORMACIÓN CLASIFICADA<br>
+      El contenido de este sistema se encuentra protegido bajo protocolos de confidencialidad institucional.
+      Cada acción realizada dentro de esta plataforma es registrada, monitoreada y archivada en tiempo real
+      por la Secretaría General. El uso indebido o no autorizado será sujeto a revisión administrativa.
+    </div>
+
+    <select id="delegate">
+      <option value="">— Seleccionar delegado —</option>
+      <option value="INTERPOL">Yilbert Enmanuel Lopez Alvarado</option>
+      <option value="OIT">Ariangel Amparo Lopez</option>
+      <option value="UNICEF">Adrián Jesús Reyes Medina</option>
+    </select>
+
+    <button onclick="initProcess()">INICIAR PROCESO</button>
+  </div>
+
+  <!-- CRISIS -->
+  <div class="panel hidden" id="crisis">
+    <h1>⚠ FALLA CRÍTICA DEL SISTEMA</h1>
+    <div class="subtitle">Protocolo de contingencia activado</div>
+    <div class="log">
+      &gt; Autenticando identidad institucional...<br>
+      &gt; Verificando integridad del sistema...<br>
+      &gt; Sincronización forzada completada.
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="panel hidden" id="result">
+    <h1 id="phaseTitle"></h1>
+    <div class="result-block" id="resultText"></div>
+  </div>
+
+  <script>
+    const day = 1; // 1 Comisión | 2 Tópico | 3 Delegación
+
+    const phaseTitles = {
+      1: 'FASE I · ASIGNACIÓN DE COMISIÓN',
+      2: 'FASE II · ASIGNACIÓN DE TÓPICO',
+      3: 'FASE III · ASIGNACIÓN DE DELEGACIÓN'
+    };
+
+    const data = {
+      INTERPOL: {
+        commission: 'INTERPOL',
+        topic: 'INFORMACIÓN CLASIFICADA'
+      },
+      OIT: {
+        commission: 'Organización Internacional del Trabajo (OIT)',
+        topic: 'INFORMACIÓN CLASIFICADA',
+        delegation: 'Organización Internacional del Trabajo (OIT)'
+      },
+      UNICEF: {
+        commission: 'Fondo de las Naciones Unidas para la Infancia (UNICEF)',
+        topic: 'INFORMACIÓN CLASIFICADA',
+        delegation: 'Fondo de las Naciones Unidas para la Infancia (UNICEF)'
+      }
+    };
+
+    function initProcess() {
+      const sel = document.getElementById('delegate');
+      if (!sel.value) return;
+
+      document.getElementById('access').classList.add('hidden');
+      document.body.classList.add('crisis-mode');
+      document.getElementById('crisis').classList.remove('hidden');
+
+      setTimeout(() => {
+        document.getElementById('crisis').classList.add('hidden');
+        document.body.classList.remove('crisis-mode');
+
+        document.getElementById('result').classList.remove('hidden');
+        document.getElementById('phaseTitle').innerText = phaseTitles[day];
+
+        const commissionName = data[sel.value].commission;
+
+        let html = '';
+        html += 'Su perfil ha sido integrado formalmente a la comisión correspondiente.<br>';
+        html += 'A partir de este momento, usted actuará en representación de <strong>' + commissionName + '</strong> '; 
+        html += 'dentro del marco de trabajo establecido por la Secretaría General.<br><br>';
+
+        html += '<strong>Comisión</strong><br>' + commissionName + '<br><br>';
+        html += '<strong>Tópico</strong><br>' + (day >= 2 ? data[sel.value].topic : 'INFORMACIÓN CLASIFICADA (Etapa 2)') + '<br><br>';
+
+        if (sel.value !== 'INTERPOL') {
+          html += '<strong>Delegación</strong><br>' + (day === 3 ? data[sel.value].delegation : 'INFORMACIÓN CLASIFICADA (Etapa 3)');
+        }
+
+        document.getElementById('resultText').innerHTML = html;
+      }, 1400);
+    }
+  </script>
+
+</body>
+</html>
